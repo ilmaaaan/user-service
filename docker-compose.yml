@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    env_file:
+      - ../.env
+    image: postgres:16
+    container_name: user-service_db
+    environment:
+      POSTGRES_DB: ${USER_SERVICE_DB_NAME}
+      POSTGRES_USER: ${USER_SERVICE_DB_USER}
+      POSTGRES_PASSWORD: ${USER_SERVICE_DB_PASSWORD}
+    ports:
+      - "${USER_SERVICE_DB_PORT}:${USER_SERVICE_DB_PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - user-network
+    restart: always
+
+  user-service:
+    env_file:
+      - ../.env
+    build:  .
+    container_name: userService_app
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:${USER_SERVICE_DB_PORT}/${USER_SERVICE_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${USER_SERVICE_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${USER_SERVICE_DB_PASSWORD}
+    depends_on:
+      postgres-db:
+        condition: service_started
+    ports:
+      - "${USER_SERVICE_APP_PORT}:${USER_SERVICE_APP_PORT}"
+    networks:
+      - user-network
+
+  user-service-metrics-db:
+    env_file:
+      - ../.env
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: ${USER_SERVICE_METRICS_DB_USER}
+      POSTGRES_PASSWORD: ${USER_SERVICE_METRICS_DB_PASSWORD}
+      POSTGRES_DB: ${USER_SERVICE_METRICS_DB_NAME}
+    ports:
+      - "${USER_SERVICE_METRICS_DB_PORT}:${POSTGRES_PORT}"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${USER_SERVICE_METRICS_DB_USER}", "-d", "AUTH_SERVICE_METRICS_DB_NAME" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.5"
+          memory: 256M
+volumes:
+  postgres_data:
+
+networks:
+  user-network:

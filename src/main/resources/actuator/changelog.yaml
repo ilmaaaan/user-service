@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01_2024-12-10_init-schema
+      author: Sarina Anastasiya
+      failOnError: true
+      validCheckSum: ANY
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            scriptComments: true
+            splitStatements: true
+            path: ./actuator/changelog/sql/01/01_2024-12-10_init-schema.sql

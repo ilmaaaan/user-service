@@ -1,0 +1,83 @@
+databaseChangeLog:
+    - changeSet:
+          id: load-users-data
+          author: Ladygin
+          comments: "Load initial users data"
+          changes:
+              - loadData:
+                    columns:
+                        - column:
+                              header: username
+                              name: username
+                              type: VARCHAR(50)
+                        - column:
+                              header: password
+                              name: password
+                              type: VARCHAR(255)
+                        - column:
+                              header: email
+                              name: email
+                              type: VARCHAR(100)
+                        - column:
+                              header: name
+                              name: name
+                              type: VARCHAR(255)
+                        - column:
+                              header: address
+                              name: address
+                              type: VARCHAR(255)
+                        - column:
+                              header: avatar_url
+                              name: avatar_url
+                              type: VARCHAR(255)
+                        - column:  # Добавляем новые столбцы
+                              header: account_non_expired
+                              name: account_non_expired
+                              type: BOOLEAN
+                        - column:  # Добавляем новые столбцы
+                              header: account_non_locked
+                              name: account_non_locked
+                              type: BOOLEAN
+                        - column:  # Добавляем новые столбцы
+                              header: credentials_non_expired
+                              name: credentials_non_expired
+                              type: BOOLEAN
+                        - column:  # Добавляем новые столбцы
+                              header: enabled
+                              name: enabled
+                              type: BOOLEAN
+                    commentLineStartsWith: '#'
+                    encoding: UTF-8
+                    file: users.csv
+                    quotchar: '"'
+                    separator: ','
+                    relativeToChangelogFile: true
+                    tableName: users
+
+    - changeSet:
+          id: load-roles-data
+          author: Akimov
+          comments: "Load initial roles data"
+          changes:
+              - loadData:
+                    columns:
+                        - column:
+                              header: id
+                              name: role_id
+                              type: BIGINT
+                        - column:
+                              header: name
+                              name: name
+                              type: VARCHAR(255)
+                        - column:
+                              header: description
+                              name: description
+                              type: VARCHAR(255)
+                    commentLineStartsWith: '#'
+                    encoding: UTF-8
+                    file: roles.csv
+                    quotchar: '"'
+                    separator: ','
+                    relativeToChangelogFile: true
+                    tableName: roles
+

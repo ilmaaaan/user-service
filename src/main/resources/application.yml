@@ -1,0 +1,94 @@
+server:
+  port: ${USER_SERVICE_SERVER_PORT}
+
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+  application:
+    name: user-service
+  datasource:
+    user-service-db:
+      driver-class-name: ${POSTGRES_DRIVER}
+      url: jdbc:postgresql://${POSTGRES_HOST}:${USER_SERVICE_DB_PORT}/${USER_SERVICE_DB_NAME}
+      username: ${USER_SERVICE_DB_USER}
+      password: ${USER_SERVICE_DB_PASSWORD}
+    app-metrics-db:
+      url: jdbc:postgresql://${POSTGRES_HOST}:${USER_SERVICE_METRICS_DB_PORT}/${USER_SERVICE_METRICS_DB_NAME}
+      username: ${USER_SERVICE_METRICS_DB_USER}
+      password: ${USER_SERVICE_METRICS_DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+#      ddl-auto: none
+# Kafka Configuration
+  kafka:
+    bootstrap-servers: ${KAFKA_ADVERTISED_LISTENERS_BOOTSTRAP}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#  #Liquibase properties
+  liquibase:
+    change-log: classpath:db.changelog/db.changelog-master.yaml
+    contexts: dev
+    enabled: true
+# Logging level for debugging Kafka
+logging:
+  level:
+    org.apache.kafka: DEBUG
+    org.springframework.kafka: DEBUG
+# AWS S3 Configuration
+aws:
+  s3:
+    bucket: your_bucket_name
+
+# JWT Configuration
+jwt:
+  expiration: 3600000
+  secret: your-secret-key
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_SERVICE_URL_DEFAULTZONE}
+    register-with-eureka: true
+    fetch-registry: true
+
+# настройки актуатора
+actuator:
+  url: http://${POSTGRES_HOST}:${USER_SERVICE_ACTUATOR_PORT}/actuator/info
+management:
+  server:
+    port: ${USER_SERVICE_ACTUATOR_PORT}
+  endpoints:
+    web:
+      exposure:
+        include: info
+  info:
+    build:
+      enabled: false
+    git:
+      enabled: false
+  endpoint:
+    info:
+      enabled: true
+      cache:
+        time-to-live: 300000
+
+#настройки TTL метрик
+main:
+  info:
+    save:
+      fixed:
+        rate: 10_000
+metrics:
+  save:
+    fixed:
+      rate: 180_000
+delete:
+  initial:
+    delay: 300_000
+  fixed:
+    rate: 300_000
+  before:
+    seconds: 300

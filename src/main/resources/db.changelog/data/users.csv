@@ -1,0 +1,5 @@
+id,username,password,email,name,address,avatar_url,account_non_expired,account_non_locked,credentials_non_expired,enabled
+1,john_doe,securePassword123,john@example.com,John Doe,"123 Main St, Apt 4","https://example.com/avatars/john.png",true,true,true,true
+2,jane_smith,anotherPassword456,jane@example.com,Jane Smith,"456 Elm St, Suite 10","https://example.com/avatars/jane.png",true,true,true,true
+3,bob_brown,password789,bob@example.com,Bob Brown,"789 Oak St","https://example.com/avatars/bob.png",true,false,true,true
+4,alice_williams,password321,alice@example.com,Alice Williams,"101 Pine St","https://example.com/avatars/alice.png",false,true,true,false
